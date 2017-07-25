@@ -14,9 +14,10 @@
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="209*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -31,37 +32,77 @@
                 <TextBox
                     Grid.Column="1"
                     Margin="5"
-                    Text="{Binding Path=Path, Mode=TwoWay}"
+                    Text="{Binding Path=StartFolder, Mode=TwoWay}"
                     TextWrapping="Wrap" />
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Button
                     Name="ScanButton"
                     Margin="5"
                     Click="ScanButton_Click"
                     Content="Scan" />
-                <TextBox
+                <TextBlock
                     Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="Size ≥" />
+                <TextBox
+                    Grid.Column="2"
                     Margin="5"
                     Text="{Binding Path=Size, Mode=TwoWay}"
                     TextWrapping="Wrap" />
-                <ComboBox Grid.Column="2" Margin="5" />
+                <ComboBox
+                    Grid.Column="3"
+                    Margin="5"
+                    ItemsSource="{Binding Path=SizeType}"
+                    SelectedIndex="0" />
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Name="OpenInExplorer"
+                    Grid.Column="0"
+                    Margin="5"
+                    Click="OpenInExplorer_Click"
+                    Content="Open in Explorer"
+                    IsEnabled="False" />
+                <Button
+                    Name="DeleteButton"
+                    Grid.Column="1"
+                    Margin="5"
+                    Click="DeleteButton_Click"
+                    Content="Send To Recycle Bin"
+                    IsEnabled="False" />
             </Grid>
 
-            <Expander
-                Grid.Row="2"
-                Margin="5,4.8,5.4,4.8"
-                Header="Expand folder list">
-                <Grid Background="#FFE5E5E5">
-                    <ListView ItemsSource="{Binding Folders}" />
-                </Grid>
-            </Expander>
-
+            <ListView
+                Grid.Row="3"
+                Height="Auto"
+                ItemsSource="{Binding ResultItems}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Focusable" Value="false" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template">
+                            <!--  Disable highlight items  -->
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
         </Grid>
     </Grid>
 </Window>

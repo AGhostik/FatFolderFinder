@@ -14,8 +14,13 @@ namespace FatFolderFinder.UI
         public MainViewModel()
         {
             _mainModel = new MainModel();
-            Folders = _mainModel.Folders;
-            Size = 1073741824;
+            _mainModel.ScanFinished += BuildResultItems;
+
+            ResultItems = new ObservableCollection<object>();
+
+            StartFolder = @"D:\New folder";
+            Size = 0;
+            SizeType = new ObservableCollection<string>() { "Byte", "KB", "MB", "GB" };
         }
         
         #region Fields
@@ -24,16 +29,15 @@ namespace FatFolderFinder.UI
 
         private string _path;
         private long _size;
-        private string _sizeType;
 
         #endregion
 
         #region Properties
 
-        public string Path { get => _path; set => Set(ref _path, value); }
+        public string StartFolder { get => _path; set => Set(ref _path, value); }
         public long Size { get => _size; set => Set(ref _size, value); } //bytes
-        public string SizeType { get => _sizeType; set => Set(ref _sizeType, value); }
-        public ObservableCollection<string> Folders { get; set; }
+        public ObservableCollection<string> SizeType { get; set; }
+        public ObservableCollection<object> ResultItems { get; set; }
 
         #endregion
 
@@ -41,7 +45,30 @@ namespace FatFolderFinder.UI
 
         public void Scan()
         {
-            _mainModel.StartScan(Path, Size);
+            _mainModel.Path = StartFolder;
+            _mainModel.SizeLimit = Size;
+            _mainModel.StartScan();
+        }
+
+        private void BuildResultItems(object sender, EventArgs e)
+        {
+            ResultItems.Clear();
+
+            if (true) //replace to success message
+            {
+                var folders = _mainModel.Folders;
+                foreach (var folder in folders)
+                {
+                    ResultItem item = new ResultItem()
+                    {
+                        DataContext = folder
+                    };
+                    ResultItems.Add(item);
+                }
+            }
+            else
+            {
+            }
         }
 
         #endregion

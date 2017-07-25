@@ -38,13 +38,23 @@ namespace FatFolderFinder.UI
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
-                _mainViewModel.Path = dialog.FileName;
+                _mainViewModel.StartFolder = dialog.FileName;
             }
         }
 
         private void ScanButton_Click(object sender, RoutedEventArgs e)
         {
             _mainViewModel.Scan();
+        }
+
+        private void OpenInExplorer_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

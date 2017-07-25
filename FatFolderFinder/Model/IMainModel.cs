@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FatFolderFinder.Model
 {
     interface IMainModel
     {
-        ObservableCollection<string> Folders { get; set; }
+        string Path { get; set; }
 
-        void StartScan(string path, long size);
+        long SizeLimit { get; set; }
+
+        List<object> Folders { get; set; }
+
+        event EventHandler ScanFinished;
+
+        void StartScan();
     }
 }

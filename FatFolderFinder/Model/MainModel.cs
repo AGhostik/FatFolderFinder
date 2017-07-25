@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FatFolderFinder.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -12,24 +13,33 @@ namespace FatFolderFinder.Model
     {
         public MainModel()
         {
-            Folders = new ObservableCollection<string>();
+            Folders = new List<object>();
         }
+        
+        public string Path { get; set; }
+        public long SizeLimit { get; set; }
+        public List<object> Folders { get; set; }
 
-        public ObservableCollection<string> Folders { get; set; }
+        public event EventHandler ScanFinished;
 
-        public void StartScan(string path, long size)
+        public void StartScan()
         {
-            if (Directory.Exists(path))
+            Folders.Clear();
+
+            if (Directory.Exists(Path))
             {
-                DirectorySize(new DirectoryInfo(path), size);
+                RecursionScanFolder(new DirectoryInfo(Path));
+                ScanFinished(this, null); // replace null to success message arg
             }
             else
             {
+                //add event with custom arg
+                //fail message arg
                 return;
             }
         }
 
-        private long DirectorySize(DirectoryInfo d, long sizeLimit)
+        private long RecursionScanFolder(DirectoryInfo d)
         {
             long size = 0;
 
@@ -44,12 +54,21 @@ namespace FatFolderFinder.Model
                 DirectoryInfo[] directories = d.GetDirectories();
                 foreach (DirectoryInfo di in directories)
                 {
-                    size += DirectorySize(di, sizeLimit);
+                    size += RecursionScanFolder(di);
                 }
 
-                if (size >= sizeLimit)
+                if (size >= SizeLimit)
                 {
-                    Folders.Add(d.FullName);
+                    ResultItemViewModel item = new ResultItemViewModel()
+                    {
+                        Files = files.Count(),
+                        Name = d.Name,
+                        FullName = d.FullName,
+                        Size = size,
+                        SizeType = "Byte_!",
+                        SubFolders = directories.Count()
+                    };
+                    Folders.Add(item);
                 }
 
                 return size;

@@ -1,0 +1,13 @@
+﻿namespace FatFolderFinder.UI
+{
+    class ResultItemViewModel
+    {
+        public bool IsChecked { get; set; }
+        public string Name { get; set; }
+        public string FullName { get; set; }
+        public long Size { get; set; }
+        public string SizeType { get; set; }
+        public int Files { get; set; }
+        public int SubFolders { get; set; }
+    }
+}
