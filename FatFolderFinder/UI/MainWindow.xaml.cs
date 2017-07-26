@@ -49,12 +49,12 @@ namespace FatFolderFinder.UI
 
         private void OpenInExplorer_Click(object sender, RoutedEventArgs e)
         {
-
+            _mainViewModel.OpenFolder();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-
+            _mainViewModel.DeleteFolder();
         }
     }
 }

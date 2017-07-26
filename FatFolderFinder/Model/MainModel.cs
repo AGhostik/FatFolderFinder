@@ -1,11 +1,11 @@
 ﻿using FatFolderFinder.UI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+using System.Windows;
 
 namespace FatFolderFinder.Model
 {
@@ -15,12 +15,20 @@ namespace FatFolderFinder.Model
         {
             Folders = new List<object>();
         }
-        
-        public string Path { get; set; }
-        public long SizeLimit { get; set; }
-        public List<object> Folders { get; set; }
 
-        public event EventHandler ScanFinished;
+        private const string b = "Byte";
+        private const string kb = "KB";
+        private const string mb = "MB";
+        private const string gb = "GB";
+
+        private long _sizeLimitByte;
+
+        public string Path { get; set; }
+        public double SizeLimit { get; set; }
+        public List<object> Folders { get; set; }
+        public string SizeType { get; set; }
+
+        public event EventHandler UpdateFolders;
 
         public void StartScan()
         {
@@ -28,15 +36,54 @@ namespace FatFolderFinder.Model
 
             if (Directory.Exists(Path))
             {
+                _sizeLimitByte = GetSizeInBytes(SizeLimit);
                 RecursionScanFolder(new DirectoryInfo(Path));
-                ScanFinished(this, null); // replace null to success message arg
+                UpdateFolders(this, null);
             }
-            else
+        }
+
+        public void OpenCheckedFolders()
+        {
+            foreach (var folder in Folders)
             {
-                //add event with custom arg
-                //fail message arg
-                return;
+                ResultItemViewModel f = folder as ResultItemViewModel;
+                if (f.IsChecked)
+                {
+                    Process.Start(f.FullName);
+                }
             }
+        }
+
+        public void DeleteCheckedFolders()
+        {
+            for (int i = 0; i < Folders.Count; i++)
+            {
+                ResultItemViewModel f = Folders[i] as ResultItemViewModel;
+
+                if (f.IsChecked)
+                {
+                    FileSystem.DeleteDirectory(f.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
+
+                    i -= RemoveFolderTree(f.FullName);
+                }
+            }
+            UpdateFolders(this, null);
+        }
+
+        private int RemoveFolderTree(string rootFolder)
+        {
+            int removedCount = 0;
+            for (int i = 0; i < Folders.Count; i++)
+            {
+                ResultItemViewModel f = Folders[i] as ResultItemViewModel;
+                if (f.FullName.Contains(rootFolder))
+                {
+                    Folders.RemoveAt(i);                    
+                    removedCount++;
+                    i--;
+                }
+            }
+            return removedCount;
         }
 
         private long RecursionScanFolder(DirectoryInfo d)
@@ -57,18 +104,9 @@ namespace FatFolderFinder.Model
                     size += RecursionScanFolder(di);
                 }
 
-                if (size >= SizeLimit)
+                if (size >= _sizeLimitByte)
                 {
-                    ResultItemViewModel item = new ResultItemViewModel()
-                    {
-                        Files = files.Count(),
-                        Name = d.Name,
-                        FullName = d.FullName,
-                        Size = size,
-                        SizeType = "Byte_!",
-                        SubFolders = directories.Count()
-                    };
-                    Folders.Add(item);
+                    AddFolder(d, size, files.Count(), directories.Count());
                 }
 
                 return size;
@@ -78,5 +116,55 @@ namespace FatFolderFinder.Model
                 return 0;
             }
         }
+
+        private void AddFolder(DirectoryInfo dir, long size, int fileCount, int subdirCount)
+        {
+            ResultItemViewModel item = new ResultItemViewModel()
+            {
+                Files = fileCount,
+                Name = dir.Name,
+                FullName = dir.FullName,
+                Size = Math.Round(GetSizeInSelectedType(size), 2),
+                SizeType = SizeType,
+                SubFolders = subdirCount
+            };
+            Folders.Add(item);
+        }
+
+
+        private long GetSizeInBytes(double size)
+        {
+            switch (SizeType)
+            {
+                case b:
+                    return (long) size;
+                case kb:
+                    return (long) size * 1024;
+                case mb:
+                    return (long) size * 1024 * 1024;
+                case gb:
+                    return (long) size * 1024 * 1024 * 1024;
+                default:
+                    return 0;
+            }
+        }
+
+        private double GetSizeInSelectedType(long size)
+        {
+            switch (SizeType)
+            {
+                case b:
+                    return size;
+                case kb:
+                    return (double) size / 1024;
+                case mb:
+                    return (double) size / (1024 * 1024);
+                case gb:
+                    return (double) size / (1024 * 1024 * 1024);
+                default:
+                    return 0;
+            }
+        }
+
     }
 }

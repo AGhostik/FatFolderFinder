@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:FatFolderFinder.UI"
     Title="MainWindow"
-    Width="525"
-    Height="350"
+    Width="400"
+    Height="250"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
     mc:Ignorable="d">
     <Grid>
@@ -61,7 +61,7 @@
                     Grid.Column="3"
                     Margin="5"
                     ItemsSource="{Binding Path=SizeType}"
-                    SelectedIndex="0" />
+                    SelectedItem="{Binding Path=SelectedSizeType, Mode=TwoWay}" />
             </Grid>
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
@@ -73,15 +73,13 @@
                     Grid.Column="0"
                     Margin="5"
                     Click="OpenInExplorer_Click"
-                    Content="Open in Explorer"
-                    IsEnabled="False" />
+                    Content="Open in Explorer" />
                 <Button
                     Name="DeleteButton"
                     Grid.Column="1"
                     Margin="5"
                     Click="DeleteButton_Click"
-                    Content="Send To Recycle Bin"
-                    IsEnabled="False" />
+                    Content="Send To Recycle Bin" />
             </Grid>
 
             <ListView
@@ -90,6 +88,7 @@
                 ItemsSource="{Binding ResultItems}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
+                        <Setter Property="Margin" Value="0,0,0,10" />
                         <Setter Property="Focusable" Value="false" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="Template">

@@ -1,9 +1,5 @@
 ﻿using FatFolderFinder.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using System.Collections.ObjectModel;
 
@@ -14,28 +10,40 @@ namespace FatFolderFinder.UI
         public MainViewModel()
         {
             _mainModel = new MainModel();
-            _mainModel.ScanFinished += BuildResultItems;
+            _mainModel.UpdateFolders += BuildResultItems;
 
             ResultItems = new ObservableCollection<object>();
-
-            StartFolder = @"D:\New folder";
-            Size = 0;
-            SizeType = new ObservableCollection<string>() { "Byte", "KB", "MB", "GB" };
+            
+            SizeType = new ObservableCollection<string>()
+            {
+                b,
+                kb,
+                mb,
+                gb
+            };
+            SelectedSizeType = b;
         }
-        
+
         #region Fields
+
+        private const string b = "Byte";
+        private const string kb = "KB";
+        private const string mb = "MB";
+        private const string gb = "GB";
 
         private IMainModel _mainModel;
 
         private string _path;
-        private long _size;
+        private string _selectedSizeType;
+        private double _size;
 
         #endregion
 
         #region Properties
 
         public string StartFolder { get => _path; set => Set(ref _path, value); }
-        public long Size { get => _size; set => Set(ref _size, value); } //bytes
+        public double Size { get => _size; set => Set(ref _size, value); }
+        public string SelectedSizeType { get => _selectedSizeType; set => Set(ref _selectedSizeType, value); }
         public ObservableCollection<string> SizeType { get; set; }
         public ObservableCollection<object> ResultItems { get; set; }
 
@@ -47,27 +55,32 @@ namespace FatFolderFinder.UI
         {
             _mainModel.Path = StartFolder;
             _mainModel.SizeLimit = Size;
+            _mainModel.SizeType = SelectedSizeType;
             _mainModel.StartScan();
+        }
+
+        public void OpenFolder()
+        {
+            _mainModel.OpenCheckedFolders();
+        }
+
+        public void DeleteFolder()
+        {
+            _mainModel.DeleteCheckedFolders();
         }
 
         private void BuildResultItems(object sender, EventArgs e)
         {
             ResultItems.Clear();
 
-            if (true) //replace to success message
+            var folders = _mainModel.Folders;
+            foreach (var folder in folders)
             {
-                var folders = _mainModel.Folders;
-                foreach (var folder in folders)
+                ResultItem item = new ResultItem()
                 {
-                    ResultItem item = new ResultItem()
-                    {
-                        DataContext = folder
-                    };
-                    ResultItems.Add(item);
-                }
-            }
-            else
-            {
+                    DataContext = folder
+                };
+                ResultItems.Add(item);
             }
         }
 

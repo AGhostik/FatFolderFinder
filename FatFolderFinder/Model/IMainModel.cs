@@ -8,12 +8,18 @@ namespace FatFolderFinder.Model
     {
         string Path { get; set; }
 
-        long SizeLimit { get; set; }
+        string SizeType { get; set; }
+
+        double SizeLimit { get; set; }
 
         List<object> Folders { get; set; }
 
-        event EventHandler ScanFinished;
+        event EventHandler UpdateFolders;
 
         void StartScan();
+
+        void OpenCheckedFolders();
+
+        void DeleteCheckedFolders();
     }
 }
