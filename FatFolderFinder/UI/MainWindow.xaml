@@ -63,20 +63,28 @@
                     ItemsSource="{Binding Path=SizeType}"
                     SelectedItem="{Binding Path=SelectedSizeType, Mode=TwoWay}" />
             </Grid>
+
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+                <CheckBox
+                    VerticalAlignment="Center"
+                    Checked="CheckBox_Checked"
+                    Content="Check all"
+                    Unchecked="CheckBox_Unchecked" />
                 <Button
                     Name="OpenInExplorer"
-                    Grid.Column="0"
+                    Grid.Column="2"
                     Margin="5"
                     Click="OpenInExplorer_Click"
                     Content="Open in Explorer" />
                 <Button
                     Name="DeleteButton"
-                    Grid.Column="1"
+                    Grid.Column="3"
                     Margin="5"
                     Click="DeleteButton_Click"
                     Content="Send To Recycle Bin" />

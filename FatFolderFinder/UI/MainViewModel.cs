@@ -14,27 +14,22 @@ namespace FatFolderFinder.UI
 
             ResultItems = new ObservableCollection<object>();
             
-            SizeType = new ObservableCollection<string>()
+            SizeType = new ObservableCollection<SizeTypeEnum>()
             {
-                b,
-                kb,
-                mb,
-                gb
+                SizeTypeEnum.Byte,
+                SizeTypeEnum.KB,
+                SizeTypeEnum.MB,
+                SizeTypeEnum.GB
             };
-            SelectedSizeType = b;
+            SelectedSizeType = SizeTypeEnum.Byte;
         }
 
         #region Fields
 
-        private const string b = "Byte";
-        private const string kb = "KB";
-        private const string mb = "MB";
-        private const string gb = "GB";
-
-        private IMainModel _mainModel;
+        private MainModel _mainModel;
 
         private string _path;
-        private string _selectedSizeType;
+        private SizeTypeEnum _selectedSizeType;
         private double _size;
 
         #endregion
@@ -43,8 +38,8 @@ namespace FatFolderFinder.UI
 
         public string StartFolder { get => _path; set => Set(ref _path, value); }
         public double Size { get => _size; set => Set(ref _size, value); }
-        public string SelectedSizeType { get => _selectedSizeType; set => Set(ref _selectedSizeType, value); }
-        public ObservableCollection<string> SizeType { get; set; }
+        public SizeTypeEnum SelectedSizeType { get => _selectedSizeType; set => Set(ref _selectedSizeType, value); }
+        public ObservableCollection<SizeTypeEnum> SizeType { get; set; }
         public ObservableCollection<object> ResultItems { get; set; }
 
         #endregion

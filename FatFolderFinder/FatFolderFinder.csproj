@@ -85,8 +85,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\IMainModel.cs" />
     <Compile Include="Model\MainModel.cs" />
+    <Compile Include="Model\SizeTypeEnum.cs" />
     <Compile Include="UI\MainViewModel.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

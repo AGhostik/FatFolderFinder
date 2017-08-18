@@ -9,24 +9,19 @@ using System.Windows;
 
 namespace FatFolderFinder.Model
 {
-    class MainModel : IMainModel
+    class MainModel
     {
         public MainModel()
         {
             Folders = new List<object>();
         }
 
-        private const string b = "Byte";
-        private const string kb = "KB";
-        private const string mb = "MB";
-        private const string gb = "GB";
-
         private long _sizeLimitByte;
 
         public string Path { get; set; }
         public double SizeLimit { get; set; }
         public List<object> Folders { get; set; }
-        public string SizeType { get; set; }
+        public SizeTypeEnum SizeType { get; set; }
 
         public event EventHandler UpdateFolders;
 
@@ -136,13 +131,13 @@ namespace FatFolderFinder.Model
         {
             switch (SizeType)
             {
-                case b:
+                case SizeTypeEnum.Byte:
                     return (long) size;
-                case kb:
+                case SizeTypeEnum.KB:
                     return (long) size * 1024;
-                case mb:
+                case SizeTypeEnum.MB:
                     return (long) size * 1024 * 1024;
-                case gb:
+                case SizeTypeEnum.GB:
                     return (long) size * 1024 * 1024 * 1024;
                 default:
                     return 0;
@@ -153,13 +148,13 @@ namespace FatFolderFinder.Model
         {
             switch (SizeType)
             {
-                case b:
+                case SizeTypeEnum.Byte:
                     return size;
-                case kb:
+                case SizeTypeEnum.KB:
                     return (double) size / 1024;
-                case mb:
+                case SizeTypeEnum.MB:
                     return (double) size / (1024 * 1024);
-                case gb:
+                case SizeTypeEnum.GB:
                     return (double) size / (1024 * 1024 * 1024);
                 default:
                     return 0;

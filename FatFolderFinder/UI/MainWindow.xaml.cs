@@ -56,5 +56,15 @@ namespace FatFolderFinder.UI
         {
             _mainViewModel.DeleteFolder();
         }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(e.ToString());
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(e.ToString());
+        }
     }
 }
