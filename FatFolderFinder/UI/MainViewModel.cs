@@ -1,5 +1,4 @@
 ﻿using FatFolderFinder.Model;
-using System;
 using GalaSoft.MvvmLight;
 using System.Collections.ObjectModel;
 
@@ -10,73 +9,93 @@ namespace FatFolderFinder.UI
         public MainViewModel()
         {
             _mainModel = new MainModel();
-            _mainModel.UpdateFolders += BuildResultItems;
 
-            ResultItems = new ObservableCollection<object>();
-            
-            SizeType = new ObservableCollection<SizeTypeEnum>()
-            {
-                SizeTypeEnum.Byte,
-                SizeTypeEnum.KB,
-                SizeTypeEnum.MB,
-                SizeTypeEnum.GB
-            };
-            SelectedSizeType = SizeTypeEnum.Byte;
+            Size = 0;
+            SelectedSizeType = SizeTypeEnum.Byte;            
         }
 
         #region Fields
 
         private MainModel _mainModel;
 
-        private string _path;
         private SizeTypeEnum _selectedSizeType;
-        private double _size;
+        private long _size;
+        private int _selectedItem;
 
         #endregion
 
         #region Properties
+        
+        public ObservableCollection<FolderViewModel> Tree = new ObservableCollection<FolderViewModel>(); // ?
 
-        public string StartFolder { get => _path; set => Set(ref _path, value); }
-        public double Size { get => _size; set => Set(ref _size, value); }
-        public SizeTypeEnum SelectedSizeType { get => _selectedSizeType; set => Set(ref _selectedSizeType, value); }
+        public SizeTypeEnum SelectedSizeType
+        {
+            get => _selectedSizeType;
+            set => _selectedSizeType = value;
+        }
+
         public ObservableCollection<SizeTypeEnum> SizeType { get; set; }
-        public ObservableCollection<object> ResultItems { get; set; }
+        public float Size
+        {
+            get
+            {
+                switch (SelectedSizeType)
+                {
+                    case SizeTypeEnum.Byte:
+                        return _size;
+                    case SizeTypeEnum.KB:
+                        return (float)_size / 1024;
+                    case SizeTypeEnum.MB:
+                        return (float)_size / (1024 * 1024);
+                    case SizeTypeEnum.GB:
+                        return (float)_size / (1024 * 1024 * 1024);
+                    default:
+                        return _size;
+                }
+            }
+            set
+            {
+                switch (SelectedSizeType)
+                {
+                    case SizeTypeEnum.Byte:
+                        _size = (long)value;
+                        break;
+                    case SizeTypeEnum.KB:
+                        _size = (long)value * 1024;
+                        break;
+                    case SizeTypeEnum.MB:
+                        _size = (long)value * 1024 * 1024;
+                        break;
+                    case SizeTypeEnum.GB:
+                        _size = (long)value * 1024 * 1024 * 1024;
+                        break;
+                }
+            }
+        }
+        public int SelectedItem
+        {
+            get => _selectedItem;
+            set => Set(ref _selectedItem, value);
+        }
 
         #endregion
 
         #region Metods
 
-        public void Scan()
+        public void Scan(string path)
         {
-            _mainModel.Path = StartFolder;
-            _mainModel.SizeLimit = Size;
-            _mainModel.SizeType = SelectedSizeType;
-            _mainModel.StartScan();
-        }
-
-        public void OpenFolder()
-        {
-            _mainModel.OpenCheckedFolders();
+            var list = _mainModel.Scan(path, _size);
+            Tree = new ObservableCollection<FolderViewModel>(list);
         }
 
         public void DeleteFolder()
         {
-            _mainModel.DeleteCheckedFolders();
+            _mainModel.DeleteFolder(Tree[SelectedItem].FullName);
         }
 
-        private void BuildResultItems(object sender, EventArgs e)
+        public void OpenFolder()
         {
-            ResultItems.Clear();
-
-            var folders = _mainModel.Folders;
-            foreach (var folder in folders)
-            {
-                ResultItem item = new ResultItem()
-                {
-                    DataContext = folder
-                };
-                ResultItems.Add(item);
-            }
+            _mainModel.OpenFolder(Tree[SelectedItem].FullName);
         }
 
         #endregion

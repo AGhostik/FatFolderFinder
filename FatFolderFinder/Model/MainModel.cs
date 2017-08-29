@@ -3,163 +3,74 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Microsoft.VisualBasic.FileIO;
-using System.Windows;
 
 namespace FatFolderFinder.Model
 {
-    class MainModel
+    class MainModel : IExplorer
     {
         public MainModel()
         {
-            Folders = new List<object>();
         }
 
-        private long _sizeLimitByte;
-
-        public string Path { get; set; }
-        public double SizeLimit { get; set; }
-        public List<object> Folders { get; set; }
-        public SizeTypeEnum SizeType { get; set; }
-
-        public event EventHandler UpdateFolders;
-
-        public void StartScan()
+        public List<FolderViewModel> Scan(string path, long sizeLimit)
         {
-            Folders.Clear();
-
-            if (Directory.Exists(Path))
+            if (Directory.Exists(path))
             {
-                _sizeLimitByte = GetSizeInBytes(SizeLimit);
-                RecursionScanFolder(new DirectoryInfo(Path));
-                UpdateFolders(this, null);
+                return RecursionScanFolder(new DirectoryInfo(path), sizeLimit);
+            }
+            else
+            {
+                throw new ArgumentException(path + " does not exist");
             }
         }
 
-        public void OpenCheckedFolders()
+        public void OpenFolder(string path)
         {
-            foreach (var folder in Folders)
+            Process.Start(path);
+        }
+
+        public void DeleteFolder(string path)
+        {
+            FileSystem.DeleteDirectory(path,
+                UIOption.AllDialogs, 
+                RecycleOption.SendToRecycleBin, 
+                UICancelOption.DoNothing);
+        }
+
+        private List<FolderViewModel> RecursionScanFolder(DirectoryInfo d, long sizeLimit)
+        {
+            var result = new List<FolderViewModel>();
+            var folder = new FolderViewModel();
+            
+            FileInfo[] files = d.GetFiles();
+            foreach (FileInfo f in files)
             {
-                ResultItemViewModel f = folder as ResultItemViewModel;
-                if (f.IsChecked)
+                folder.Size += f.Length;
+            }
+
+            DirectoryInfo[] directories = d.GetDirectories();
+            foreach (DirectoryInfo di in directories)
+            {
+                foreach (var childFolder in RecursionScanFolder(di, sizeLimit))
                 {
-                    Process.Start(f.FullName);
+                    result.Add(childFolder);
+                    folder.Size += childFolder.Size;
                 }
             }
-        }
 
-        public void DeleteCheckedFolders()
-        {
-            for (int i = 0; i < Folders.Count; i++)
+            if (folder.Size >= sizeLimit)
             {
-                ResultItemViewModel f = Folders[i] as ResultItemViewModel;
+                folder.Name = d.Name;
+                folder.FullName = d.FullName;
+                folder.FileCount = d.GetFiles().Length;
+                folder.FolderCount = d.GetDirectories().Length;
+                folder.SizeType = SizeTypeEnum.Byte;
 
-                if (f.IsChecked)
-                {
-                    FileSystem.DeleteDirectory(f.FullName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
-
-                    i -= RemoveFolderTree(f.FullName);
-                }
+                result.Add(folder);
             }
-            UpdateFolders(this, null);
-        }
 
-        private int RemoveFolderTree(string rootFolder)
-        {
-            int removedCount = 0;
-            for (int i = 0; i < Folders.Count; i++)
-            {
-                ResultItemViewModel f = Folders[i] as ResultItemViewModel;
-                if (f.FullName.Contains(rootFolder))
-                {
-                    Folders.RemoveAt(i);                    
-                    removedCount++;
-                    i--;
-                }
-            }
-            return removedCount;
-        }
-
-        private long RecursionScanFolder(DirectoryInfo d)
-        {
-            long size = 0;
-
-            try //can catch access denied error, if has no administrative privileges
-            {
-                FileInfo[] files = d.GetFiles();
-                foreach (FileInfo f in files)
-                {
-                    size += f.Length;
-                }                     
-
-                DirectoryInfo[] directories = d.GetDirectories();
-                foreach (DirectoryInfo di in directories)
-                {
-                    size += RecursionScanFolder(di);
-                }
-
-                if (size >= _sizeLimitByte)
-                {
-                    AddFolder(d, size, files.Count(), directories.Count());
-                }
-
-                return size;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        private void AddFolder(DirectoryInfo dir, long size, int fileCount, int subdirCount)
-        {
-            ResultItemViewModel item = new ResultItemViewModel()
-            {
-                Files = fileCount,
-                Name = dir.Name,
-                FullName = dir.FullName,
-                Size = Math.Round(GetSizeInSelectedType(size), 2),
-                SizeType = SizeType,
-                SubFolders = subdirCount
-            };
-            Folders.Add(item);
-        }
-
-
-        private long GetSizeInBytes(double size)
-        {
-            switch (SizeType)
-            {
-                case SizeTypeEnum.Byte:
-                    return (long) size;
-                case SizeTypeEnum.KB:
-                    return (long) size * 1024;
-                case SizeTypeEnum.MB:
-                    return (long) size * 1024 * 1024;
-                case SizeTypeEnum.GB:
-                    return (long) size * 1024 * 1024 * 1024;
-                default:
-                    return 0;
-            }
-        }
-
-        private double GetSizeInSelectedType(long size)
-        {
-            switch (SizeType)
-            {
-                case SizeTypeEnum.Byte:
-                    return size;
-                case SizeTypeEnum.KB:
-                    return (double) size / 1024;
-                case SizeTypeEnum.MB:
-                    return (double) size / (1024 * 1024);
-                case SizeTypeEnum.GB:
-                    return (double) size / (1024 * 1024 * 1024);
-                default:
-                    return 0;
-            }
-        }
-
+            return result;
+        }        
     }
 }

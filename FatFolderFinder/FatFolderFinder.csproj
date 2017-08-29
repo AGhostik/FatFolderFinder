@@ -85,6 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\IExplorer.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\SizeTypeEnum.cs" />
     <Compile Include="UI\MainViewModel.cs" />
@@ -95,15 +96,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\ResultItem.xaml.cs">
-      <DependentUpon>ResultItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ResultItemViewModel.cs" />
+    <Compile Include="UI\FolderViewModel.cs" />
     <Page Include="UI\MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\ResultItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
