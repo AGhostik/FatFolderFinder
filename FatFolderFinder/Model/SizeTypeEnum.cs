@@ -1,6 +1,6 @@
 ﻿namespace FatFolderFinder.Model
 {
-    enum SizeTypeEnum
+    public enum SizeTypeEnum
     {
         Byte,
         KB,

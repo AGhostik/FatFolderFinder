@@ -1,8 +1,9 @@
 ﻿using FatFolderFinder.Model;
+using System.Collections.ObjectModel;
 
 namespace FatFolderFinder.UI
 {
-    class FolderViewModel
+    public class FolderViewModel
     {
         public string Name { get; set; }
         public string FullName { get; set; }
@@ -10,5 +11,7 @@ namespace FatFolderFinder.UI
         public SizeTypeEnum SizeType { get; set; }
         public int FileCount { get; set; }
         public int FolderCount { get; set; }
+
+        public ObservableCollection<FolderViewModel> Tree { get; set; } = new ObservableCollection<FolderViewModel>();
     }
 }

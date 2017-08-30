@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
+using System.Threading.Tasks;
 
 namespace FatFolderFinder.Model
 {
-    class MainModel : IExplorer
+    public class MainModel
     {
-        public MainModel()
-        {
-        }
-
         public List<FolderViewModel> Scan(string path, long sizeLimit)
         {
             if (Directory.Exists(path))
@@ -41,7 +38,15 @@ namespace FatFolderFinder.Model
         private List<FolderViewModel> RecursionScanFolder(DirectoryInfo d, long sizeLimit)
         {
             var result = new List<FolderViewModel>();
-            var folder = new FolderViewModel();
+            var folder = new FolderViewModel()
+            {
+                Name = d.Name,
+                FullName = d.FullName,
+                FileCount = d.GetFiles().Length,
+                FolderCount = d.GetDirectories().Length,
+                Size = 0,
+                SizeType = SizeTypeEnum.Byte
+            };
             
             FileInfo[] files = d.GetFiles();
             foreach (FileInfo f in files)
@@ -54,21 +59,15 @@ namespace FatFolderFinder.Model
             {
                 foreach (var childFolder in RecursionScanFolder(di, sizeLimit))
                 {
-                    result.Add(childFolder);
+                    if (childFolder.Size >= sizeLimit)
+                    {
+                        folder.Tree.Add(childFolder);
+                    }
                     folder.Size += childFolder.Size;
                 }
             }
 
-            if (folder.Size >= sizeLimit)
-            {
-                folder.Name = d.Name;
-                folder.FullName = d.FullName;
-                folder.FileCount = d.GetFiles().Length;
-                folder.FolderCount = d.GetDirectories().Length;
-                folder.SizeType = SizeTypeEnum.Byte;
-
-                result.Add(folder);
-            }
+            result.Add(folder);
 
             return result;
         }        
