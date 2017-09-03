@@ -1,9 +1,9 @@
 ﻿using FatFolderFinder.UI;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
+using System;
 
 namespace FatFolderFinder.Model
 {
@@ -11,14 +11,7 @@ namespace FatFolderFinder.Model
     {
         public List<FolderViewModel> Scan(string path, long sizeLimit)
         {
-            if (Directory.Exists(path))
-            {
-                return BuildFolderTree(new DirectoryInfo(path), sizeLimit);
-            }
-            else
-            {
-                throw new ArgumentException(path + " does not exist");
-            }
+            return BuildFolderTree(new DirectoryInfo(path), sizeLimit);
         }
 
         public void OpenFolder(string path)
@@ -36,41 +29,49 @@ namespace FatFolderFinder.Model
 
         private List<FolderViewModel> BuildFolderTree(DirectoryInfo d, long sizeLimit)
         {
-            var result = new List<FolderViewModel>();
-            var folder = new FolderViewModel()
+            try
             {
-                Name = d.Name,
-                FullName = d.FullName,
-                FileCount = d.GetFiles().Length,
-                FolderCount = d.GetDirectories().Length,
-                Size = 0,
-                LocalSize = 0,
-                SizeType = SizeTypeEnum.Byte
-            };
-            
-            FileInfo[] files = d.GetFiles();
-            foreach (FileInfo f in files)
-            {
-                folder.Size += f.Length;
-                folder.LocalSize += f.Length;
-            }
-
-            DirectoryInfo[] directories = d.GetDirectories();
-            foreach (DirectoryInfo di in directories)
-            {
-                foreach (var childFolder in BuildFolderTree(di, sizeLimit))
+                var result = new List<FolderViewModel>();
+                var folder = new FolderViewModel()
                 {
-                    if (childFolder.Size >= sizeLimit)
-                    {
-                        folder.Tree.Add(childFolder);
-                    }
-                    folder.Size += childFolder.Size;
+                    Name = d.Name,
+                    FullName = d.FullName,
+                    FileCount = d.GetFiles().Length,
+                    FolderCount = d.GetDirectories().Length,
+                    Size = 0,
+                    LocalSize = 0,
+                    SizeType = SizeTypeEnum.Byte
+                };
+
+                FileInfo[] files = d.GetFiles();
+                foreach (FileInfo f in files)
+                {
+                    folder.Size += f.Length;
+                    folder.LocalSize += f.Length;
                 }
+
+                DirectoryInfo[] directories = d.GetDirectories();
+                foreach (DirectoryInfo di in directories)
+                {
+                    foreach (var childFolder in BuildFolderTree(di, sizeLimit))
+                    {
+                        if (childFolder.Size >= sizeLimit)
+                        {
+                            folder.Tree.Add(childFolder);
+                        }
+                        folder.Size += childFolder.Size;
+                    }
+                }
+
+                result.Add(folder);
+
+                return result;
             }
-
-            result.Add(folder);
-
-            return result;
+            catch (UnauthorizedAccessException)
+            {
+                //something
+                return new List<FolderViewModel>();
+            }
         }        
     }
 }

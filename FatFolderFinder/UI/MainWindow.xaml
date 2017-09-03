@@ -27,43 +27,84 @@
             ItemsSource="{Binding Path=Tree, UpdateSourceTrigger=PropertyChanged}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:FolderViewModel}" ItemsSource="{Binding Path=Tree}">
-                    <StackPanel Name="TreeElement" Orientation="Horizontal">
+                    <Grid Name="TreeElement">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
                         <Image
-                            Height="{Binding ElementName=TreeElement, Path=ActualHeight}"
-                            Margin="0,0,5,0"
+                            Grid.Column="0"
+                            Height="26"
+                            Margin="0,0,5.6,0"
                             VerticalAlignment="Center"
                             Source="/Resources/Folder-48.png" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding Path=Name}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Grid.Column="2"
-                            Margin="10,0,10,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding Path=Size, StringFormat=N2}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Grid.Column="3"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding Path=SizeType}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Grid.Column="2"
-                            Margin="10,0,10,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding Path=LocalSize, StringFormat=N2}"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            Grid.Column="3"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding Path=SizeType}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
+                        <Grid Grid.Column="1"
+                              Margin="0,2,0,2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=Name}"
+                                    TextWrapping="Wrap" FontWeight="Bold" TextDecorations="{x:Null}"/>
+                                <TextBlock
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=Size, StringFormat=N2}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=SizeType}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0"
+                                    VerticalAlignment="Center"
+                                    Text="Contains:"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=FileCount}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="Files ("
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=LocalSize, StringFormat=N2}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=SizeType}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text=")"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=FolderCount}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="Folders"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

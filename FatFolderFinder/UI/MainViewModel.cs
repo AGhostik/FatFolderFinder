@@ -18,7 +18,7 @@ namespace FatFolderFinder.UI
             _mainModel = new MainModel();
 
             Size = 0;
-            SelectedSizeType = SizeTypeEnum.Byte;
+            SelectedSizeType = SizeTypeEnum.MB;
             SizeType.Add(SizeTypeEnum.Byte);
             SizeType.Add(SizeTypeEnum.KB);
             SizeType.Add(SizeTypeEnum.MB);
