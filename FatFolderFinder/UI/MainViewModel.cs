@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace FatFolderFinder.UI
 {
@@ -57,8 +60,11 @@ namespace FatFolderFinder.UI
 
         public void Scan(string path)
         {
-            var list = _mainModel.Scan(path, SizeGetAsByte());
-            FillTree(list);
+            Thread thread = new Thread(() => {
+                var list = _mainModel.Scan(path, SizeGetAsByte());
+                FillTree(list);
+            });
+            thread.Start();
         }
 
         public void DeleteFolder()
@@ -73,13 +79,16 @@ namespace FatFolderFinder.UI
 
         private void FillTree(IEnumerable<FolderViewModel> list)
         {
-            Tree.Clear();
-            ResetTreeValues(list);
-            foreach (var item in list)
+            Application.Current.Dispatcher.Invoke((Action)(() =>
             {
-                Tree.Add(item);
-            }
-        }
+                Tree.Clear();
+                ResetTreeValues(list);
+                foreach (var item in list)
+                {
+                    Tree.Add(item);
+                }
+            }));            
+        }        
 
         private void ResetTreeValues(IEnumerable<FolderViewModel> list)
         {
@@ -87,6 +96,7 @@ namespace FatFolderFinder.UI
             {
                 var editableItem = item;
                 editableItem.Size = SizeGetAsCurrent(editableItem.Size);
+                editableItem.LocalSize = SizeGetAsCurrent(editableItem.LocalSize);
                 editableItem.SizeType = SelectedSizeType;
 
                 if (item.Tree.Count > 0)

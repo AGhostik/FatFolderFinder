@@ -7,10 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:FatFolderFinder.UI"
     Title="FatFolderFinder"
-    Icon="/Resources/Folder-48.png"
     Width="500"
     Height="250"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+    Icon="/Resources/Folder-48.png"
     mc:Ignorable="d">
 
     <Grid>
@@ -20,24 +20,16 @@
         </Grid.ColumnDefinitions>
 
         <TreeView
-            Name="Folders"
             Grid.Column="0"
             Margin="5"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            ItemsSource="{Binding Tree, UpdateSourceTrigger=PropertyChanged}">
+            ItemsSource="{Binding Path=Tree, UpdateSourceTrigger=PropertyChanged}">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:FolderViewModel}" ItemsSource="{Binding Tree}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                <HierarchicalDataTemplate DataType="{x:Type local:FolderViewModel}" ItemsSource="{Binding Path=Tree}">
+                    <StackPanel Name="TreeElement" Orientation="Horizontal">
                         <Image
-                            Width="16"
-                            Height="16"
+                            Height="{Binding ElementName=TreeElement, Path=ActualHeight}"
                             Margin="0,0,5,0"
                             VerticalAlignment="Center"
                             Source="/Resources/Folder-48.png" />
@@ -45,21 +37,33 @@
                             Grid.Column="1"
                             Margin="0,0,10,0"
                             VerticalAlignment="Center"
-                            Text="{Binding Name}"
+                            Text="{Binding Path=Name}"
                             TextWrapping="Wrap" />
                         <TextBlock
                             Grid.Column="2"
                             Margin="10,0,10,0"
                             VerticalAlignment="Center"
-                            Text="{Binding Size, StringFormat=N2}"
+                            Text="{Binding Path=Size, StringFormat=N2}"
                             TextWrapping="Wrap" />
                         <TextBlock
                             Grid.Column="3"
                             Margin="0,0,10,0"
                             VerticalAlignment="Center"
-                            Text="{Binding SizeType}"
+                            Text="{Binding Path=SizeType}"
                             TextWrapping="Wrap" />
-                    </Grid>
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="10,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Path=LocalSize, StringFormat=N2}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Grid.Column="3"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Path=SizeType}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

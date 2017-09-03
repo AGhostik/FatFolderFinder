@@ -24,7 +24,7 @@ namespace FatFolderFinder.UI
         {
             InitializeComponent();
             _mainViewModel = new MainViewModel();
-            DataContext = _mainViewModel;
+            DataContext = _mainViewModel;            
         }
 
         MainViewModel _mainViewModel;

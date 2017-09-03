@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
-using System.Threading.Tasks;
 
 namespace FatFolderFinder.Model
 {
@@ -14,7 +13,7 @@ namespace FatFolderFinder.Model
         {
             if (Directory.Exists(path))
             {
-                return RecursionScanFolder(new DirectoryInfo(path), sizeLimit);
+                return BuildFolderTree(new DirectoryInfo(path), sizeLimit);
             }
             else
             {
@@ -35,7 +34,7 @@ namespace FatFolderFinder.Model
                 UICancelOption.DoNothing);
         }
 
-        private List<FolderViewModel> RecursionScanFolder(DirectoryInfo d, long sizeLimit)
+        private List<FolderViewModel> BuildFolderTree(DirectoryInfo d, long sizeLimit)
         {
             var result = new List<FolderViewModel>();
             var folder = new FolderViewModel()
@@ -45,6 +44,7 @@ namespace FatFolderFinder.Model
                 FileCount = d.GetFiles().Length,
                 FolderCount = d.GetDirectories().Length,
                 Size = 0,
+                LocalSize = 0,
                 SizeType = SizeTypeEnum.Byte
             };
             
@@ -52,12 +52,13 @@ namespace FatFolderFinder.Model
             foreach (FileInfo f in files)
             {
                 folder.Size += f.Length;
+                folder.LocalSize += f.Length;
             }
 
             DirectoryInfo[] directories = d.GetDirectories();
             foreach (DirectoryInfo di in directories)
             {
-                foreach (var childFolder in RecursionScanFolder(di, sizeLimit))
+                foreach (var childFolder in BuildFolderTree(di, sizeLimit))
                 {
                     if (childFolder.Size >= sizeLimit)
                     {
