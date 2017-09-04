@@ -38,8 +38,7 @@
                             Margin="0,0,5.6,0"
                             VerticalAlignment="Center"
                             Source="/Resources/Folder-48.png" />
-                        <Grid Grid.Column="1"
-                              Margin="0,2,0,2">
+                        <Grid Grid.Column="1" Margin="0,2,0,2">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
@@ -48,8 +47,10 @@
                                 <TextBlock
                                     Margin="0"
                                     VerticalAlignment="Center"
+                                    FontWeight="Bold"
                                     Text="{Binding Path=Name}"
-                                    TextWrapping="Wrap" FontWeight="Bold" TextDecorations="{x:Null}"/>
+                                    TextDecorations="{x:Null}"
+                                    TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="20,0,0,0"
                                     VerticalAlignment="Center"

@@ -69,5 +69,75 @@ namespace FatFolderFinder.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] GalaSoft_MvvmLight {
+            get {
+                object obj = ResourceManager.GetObject("GalaSoft_MvvmLight", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Icon {
+            get {
+                object obj = ResourceManager.GetObject("Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Microsoft_WindowsAPICodePack {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_WindowsAPICodePack", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Microsoft_WindowsAPICodePack_ExtendedLinguisticServices {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_WindowsAPICodePack_ExtendedLinguisticServices", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Microsoft_WindowsAPICodePack_Sensors {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_WindowsAPICodePack_Sensors", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Microsoft_WindowsAPICodePack_Shell {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_WindowsAPICodePack_Shell", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Microsoft_WindowsAPICodePack_ShellExtensions {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_WindowsAPICodePack_ShellExtensions", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
