@@ -71,16 +71,6 @@ namespace FatFolderFinder.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] GalaSoft_MvvmLight {
-            get {
-                object obj = ResourceManager.GetObject("GalaSoft_MvvmLight", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Icon {

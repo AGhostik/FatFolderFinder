@@ -1,17 +1,13 @@
 ﻿using FatFolderFinder.Model;
-using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace FatFolderFinder.UI
 {
-    class MainViewModel : ObservableObject
+    class MainViewModel
     {
         public MainViewModel()
         {
@@ -30,27 +26,15 @@ namespace FatFolderFinder.UI
 
         #region Fields
 
-        private MainModel _mainModel;
-
-        private SizeTypeEnum _selectedSizeType;
-        private int _selectedItem;
+        private readonly MainModel _mainModel;
 
         #endregion
 
         #region Properties
         public ObservableCollection<FolderViewModel> Tree { get; set; } = new ObservableCollection<FolderViewModel>();
-        public SizeTypeEnum SelectedSizeType
-        {
-            get => _selectedSizeType;
-            set => _selectedSizeType = value;
-        }
+        public SizeTypeEnum SelectedSizeType { get; set; }
         public ObservableCollection<SizeTypeEnum> SizeType { get; set; } = new ObservableCollection<SizeTypeEnum>();
         public double Size { get; set; }
-        public int SelectedItem
-        {
-            get => _selectedItem;
-            set => Set(ref _selectedItem, value);
-        }
         public bool ExplorerButtonEnabled { get; set; }
         public bool DeleteButtonEnabled { get; set; }
 
@@ -69,12 +53,12 @@ namespace FatFolderFinder.UI
 
         public void DeleteFolder()
         {
-            _mainModel.DeleteFolder(Tree[SelectedItem].FullName);
+           // _mainModel.DeleteFolder(Tree[i].FullName);
         }
 
         public void OpenFolder()
         {
-            _mainModel.OpenFolder(Tree[SelectedItem].FullName);
+           // _mainModel.OpenFolder(Tree[i].FullName);
         }
 
         private void FillTree(IEnumerable<FolderViewModel> list)
@@ -82,7 +66,7 @@ namespace FatFolderFinder.UI
             Application.Current.Dispatcher.Invoke((Action)(() =>
             {
                 Tree.Clear();
-                ResetTreeValues(list);
+                UpdateTreeValues(list);
                 foreach (var item in list)
                 {
                     Tree.Add(item);
@@ -90,7 +74,7 @@ namespace FatFolderFinder.UI
             }));            
         }        
 
-        private void ResetTreeValues(IEnumerable<FolderViewModel> list)
+        private void UpdateTreeValues(IEnumerable<FolderViewModel> list)
         {
             foreach (var item in list)
             {
@@ -101,7 +85,7 @@ namespace FatFolderFinder.UI
 
                 if (item.Tree.Count > 0)
                 {
-                    ResetTreeValues(item.Tree);
+                    UpdateTreeValues(item.Tree);
                 }                
             }
         }
