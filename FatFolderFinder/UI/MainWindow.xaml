@@ -20,13 +20,15 @@
         </Grid.ColumnDefinitions>
 
         <TreeView
+            Name="FolderTree"
             Grid.Column="0"
             Margin="5"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            ItemsSource="{Binding Path=Tree, UpdateSourceTrigger=PropertyChanged}">
+            ItemsSource="{Binding Path=Tree, UpdateSourceTrigger=PropertyChanged}"
+            SelectedItemChanged="FolderTree_SelectedItemChanged">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:FolderViewModel}" ItemsSource="{Binding Path=Tree}">
+                <HierarchicalDataTemplate DataType="{x:Type local:FolderViewModel}" ItemsSource="{Binding Path=Tree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <Grid Name="TreeElement">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -48,7 +50,7 @@
                                     Margin="0"
                                     VerticalAlignment="Center"
                                     FontWeight="Bold"
-                                    Text="{Binding Path=Name}"
+                                    Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextDecorations="{x:Null}"
                                     TextWrapping="Wrap" />
                                 <TextBlock

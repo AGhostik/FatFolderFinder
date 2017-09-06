@@ -12,7 +12,7 @@ namespace FatFolderFinder.UI
         {
             InitializeComponent();
             _mainViewModel = new MainViewModel();
-            DataContext = _mainViewModel;            
+            DataContext = _mainViewModel;
         }
 
         MainViewModel _mainViewModel;
@@ -38,6 +38,12 @@ namespace FatFolderFinder.UI
         private void DeleteFolderButton_Click(object sender, RoutedEventArgs e)
         {
             _mainViewModel.DeleteFolder();
+        }
+
+        private void FolderTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            // наиболее простой костыль из всех возможных костылей
+            _mainViewModel.SelectedItem = FolderTree.SelectedItem as FolderViewModel;
         }
     }
 }

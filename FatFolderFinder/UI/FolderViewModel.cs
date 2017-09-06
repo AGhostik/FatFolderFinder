@@ -1,18 +1,27 @@
 ﻿using FatFolderFinder.Model;
 using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight;
 
 namespace FatFolderFinder.UI
 {
-    public class FolderViewModel
+    public class FolderViewModel : ObservableObject
     {
-        public string Name { get; set; }
-        public string FullName { get; set; }
-        public double Size { get; set; }
-        public double LocalSize { get; set; }
-        public SizeTypeEnum SizeType { get; set; }
-        public int FileCount { get; set; }
-        public int FolderCount { get; set; }
+        private string _name;
+        private string _fullName;
+        private double _size;
+        private double _localSize;
+        private SizeTypeEnum _sizeType;
+        private int _fileCount;
+        private int _folderCount;
 
         public ObservableCollection<FolderViewModel> Tree { get; set; } = new ObservableCollection<FolderViewModel>();
+
+        public string Name { get => _name; set => Set(ref _name, value); }
+        public string FullName { get => _fullName; set => Set(ref _fullName, value); }
+        public double Size { get => _size; set => Set(ref _size, value); }
+        public double LocalSize { get => _localSize; set => Set(ref _localSize, value); }
+        public SizeTypeEnum SizeType { get => _sizeType; set => Set(ref _sizeType, value); }
+        public int FileCount { get => _fileCount; set => Set(ref _fileCount, value); }
+        public int FolderCount { get => _folderCount; set => Set(ref _folderCount, value); }
     }
 }

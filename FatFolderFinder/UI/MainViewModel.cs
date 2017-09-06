@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using GalaSoft.MvvmLight;
 
 namespace FatFolderFinder.UI
 {
-    class MainViewModel
+    class MainViewModel : ObservableObject
     {
         public MainViewModel()
         {
@@ -28,6 +30,10 @@ namespace FatFolderFinder.UI
 
         private readonly MainModel _mainModel;
 
+        private FolderViewModel _selectedItem;
+        private bool _explorerButtonEnabled;
+        private bool _deleteButtonEnabled;
+
         #endregion
 
         #region Properties
@@ -35,8 +41,28 @@ namespace FatFolderFinder.UI
         public SizeTypeEnum SelectedSizeType { get; set; }
         public ObservableCollection<SizeTypeEnum> SizeType { get; set; } = new ObservableCollection<SizeTypeEnum>();
         public double Size { get; set; }
-        public bool ExplorerButtonEnabled { get; set; }
-        public bool DeleteButtonEnabled { get; set; }
+        public bool ExplorerButtonEnabled { get => _explorerButtonEnabled; set => Set(ref _explorerButtonEnabled, value); }
+        public bool DeleteButtonEnabled { get => _deleteButtonEnabled; set => Set(ref _deleteButtonEnabled, value); }
+
+        public FolderViewModel SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                _selectedItem = value;
+
+                if (_selectedItem != null)
+                {
+                    ExplorerButtonEnabled = true;
+                    DeleteButtonEnabled = true;
+                }
+                else
+                {
+                    ExplorerButtonEnabled = false;
+                    DeleteButtonEnabled = false;
+                }
+            }
+        }
 
         #endregion
 
@@ -53,12 +79,41 @@ namespace FatFolderFinder.UI
 
         public void DeleteFolder()
         {
-           // _mainModel.DeleteFolder(Tree[i].FullName);
+            _mainModel.DeleteFolder(SelectedItem.FullName);
+            RemoveTreeElement(SelectedItem);
         }
 
         public void OpenFolder()
         {
-           // _mainModel.OpenFolder(Tree[i].FullName);
+            _mainModel.OpenFolder(SelectedItem.FullName);
+        }
+
+        private void RemoveTreeElement(FolderViewModel element)
+        {
+            var treeRef = Tree;
+            FolderViewModel deletedItem = null;
+            List<string> folders = new List<string>(element.FullName.Split(new[] { "\\" }, StringSplitOptions.None));
+
+            for (int i = 0; i < folders.Count; i++)
+            {
+                foreach (var treeElement in treeRef)
+                {
+                    if ((i == folders.Count - 1) && (treeElement.Name == element.Name))
+                    {
+                        deletedItem = treeElement;
+                        break;
+                    }
+                    else
+                    if (treeElement.Name == folders[i])
+                    {
+                        treeElement.Size -= element.Size;
+                        treeRef = treeElement.Tree;
+                        break;
+                    }
+                }
+            }
+
+            treeRef.Remove(deletedItem);            
         }
 
         private void FillTree(IEnumerable<FolderViewModel> list)
