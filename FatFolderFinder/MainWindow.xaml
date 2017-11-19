@@ -1,11 +1,11 @@
 ﻿<Window
-    x:Class="FatFolderFinder.UI.MainWindow"
+    x:Class="FatFolderFinder.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:FatFolderFinder.UI"
+    xmlns:local="clr-namespace:FatFolderFinder"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:FatFolderFinder.UI"
+    xmlns:vm="clr-namespace:FatFolderFinder"
     Title="FatFolderFinder"
     Width="500"
     Height="250"
@@ -56,12 +56,12 @@
                                 <TextBlock
                                     Margin="20,0,0,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Path=Size, StringFormat=N2}"
+                                    Text="{Binding Path=Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="20,0,0,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Path=SizeType}"
+                                    Text="{Binding Path=SizeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap" />
                             </StackPanel>
                             <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -73,7 +73,7 @@
                                 <TextBlock
                                     Margin="10,0,0,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Path=FileCount}"
+                                    Text="{Binding Path=FileCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="5,0,0,0"
@@ -83,12 +83,12 @@
                                 <TextBlock
                                     Margin="0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Path=LocalSize, StringFormat=N2}"
+                                    Text="{Binding Path=LocalSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Path=SizeType}"
+                                    Text="{Binding Path=SizeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="0,0,0,0"
@@ -98,7 +98,7 @@
                                 <TextBlock
                                     Margin="10,0,0,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Path=FolderCount}"
+                                    Text="{Binding Path=FolderCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="5,0,0,0"
@@ -111,6 +111,12 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+        <Label
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Please wait..."
+            Visibility="{Binding WaitLabelVisibility}" />
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>

@@ -1,11 +1,10 @@
-﻿using FatFolderFinder.UI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System;
 
-namespace FatFolderFinder.Model
+namespace FatFolderFinder
 {
     public class MainModel
     {
@@ -43,15 +42,15 @@ namespace FatFolderFinder.Model
                     SizeType = SizeTypeEnum.Byte
                 };
 
-                FileInfo[] files = d.GetFiles();
-                foreach (FileInfo f in files)
+                var files = d.GetFiles();
+                foreach (var f in files)
                 {
                     folder.Size += f.Length;
                     folder.LocalSize += f.Length;
                 }
 
-                DirectoryInfo[] directories = d.GetDirectories();
-                foreach (DirectoryInfo di in directories)
+                var directories = d.GetDirectories();
+                foreach (var di in directories)
                 {
                     foreach (var childFolder in BuildFolderTree(di, sizeLimit))
                     {

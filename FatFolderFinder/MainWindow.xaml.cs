@@ -1,12 +1,9 @@
 ﻿using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace FatFolderFinder.UI
+namespace FatFolderFinder
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
@@ -15,18 +12,18 @@ namespace FatFolderFinder.UI
             DataContext = _mainViewModel;
         }
 
-        MainViewModel _mainViewModel;
+        private readonly MainViewModel _mainViewModel;
         
-        private void FolderDialogButton_Click(object sender, RoutedEventArgs e)
+        private async void FolderDialogButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new CommonOpenFileDialog()
+            var dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = true
             };
-            CommonFileDialogResult result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
-                _mainViewModel.Scan(dialog.FileName);
+                await _mainViewModel.Scan(dialog.FileName);
             }
         }
 

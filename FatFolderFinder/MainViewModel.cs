@@ -1,29 +1,31 @@
-﻿using FatFolderFinder.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 
-namespace FatFolderFinder.UI
+namespace FatFolderFinder
 {
-    class MainViewModel : ObservableObject
+    internal class MainViewModel : ObservableObject
     {
         public MainViewModel()
         {
             _mainModel = new MainModel();
 
             Size = 0;
-            SelectedSizeType = SizeTypeEnum.MB;
+            SelectedSizeType = SizeTypeEnum.Mb;
             SizeType.Add(SizeTypeEnum.Byte);
-            SizeType.Add(SizeTypeEnum.KB);
-            SizeType.Add(SizeTypeEnum.MB);
-            SizeType.Add(SizeTypeEnum.GB);
+            SizeType.Add(SizeTypeEnum.Kb);
+            SizeType.Add(SizeTypeEnum.Mb);
+            SizeType.Add(SizeTypeEnum.Gb);
 
             ExplorerButtonEnabled = false;
             DeleteButtonEnabled = false;
+
+            WaitLabelVisibility = Visibility.Hidden;
         }
 
         #region Fields
@@ -33,6 +35,8 @@ namespace FatFolderFinder.UI
         private FolderViewModel _selectedItem;
         private bool _explorerButtonEnabled;
         private bool _deleteButtonEnabled;
+
+        private Visibility _waitLabelVisibility;
 
         #endregion
 
@@ -64,17 +68,28 @@ namespace FatFolderFinder.UI
             }
         }
 
+        public Visibility WaitLabelVisibility
+        {
+            get => _waitLabelVisibility;
+            set => Set(ref _waitLabelVisibility, value);
+        }
+
         #endregion
 
         #region Metods
 
-        public void Scan(string path)
+        public async Task Scan(string path)
         {
-            Thread thread = new Thread(() => {
+            WaitLabelVisibility = Visibility.Visible;
+            Tree.Clear();
+
+            await Task.Run(() =>
+            {
                 var list = _mainModel.Scan(path, SizeGetAsByte());
                 FillTree(list);
             });
-            thread.Start();
+
+            WaitLabelVisibility = Visibility.Hidden;
         }
 
         public void DeleteFolder()
@@ -90,43 +105,45 @@ namespace FatFolderFinder.UI
 
         private void RemoveTreeElement(FolderViewModel element)
         {
-            var treeRef = Tree;
+            var subTree = Tree;
             FolderViewModel deletedItem = null;
-            List<string> folders = new List<string>(element.FullName.Split(new[] { "\\" }, StringSplitOptions.None));
+            FolderViewModel deletedItemParent = null;
+            var folders = new List<string>(element.FullName.Split(new[] { "\\" }, StringSplitOptions.None));
 
-            for (int i = 0; i < folders.Count; i++)
+            for (var i = 0; i < folders.Count; i++)
             {
-                foreach (var treeElement in treeRef)
+                foreach (var treeElement in subTree)
                 {
                     if ((i == folders.Count - 1) && (treeElement.Name == element.Name))
                     {
                         deletedItem = treeElement;
                         break;
                     }
-                    else
                     if (treeElement.Name == folders[i])
                     {
                         treeElement.Size -= element.Size;
-                        treeRef = treeElement.Tree;
+                        subTree = treeElement.Tree;
+                        deletedItemParent = treeElement;
                         break;
                     }
                 }
             }
 
-            treeRef.Remove(deletedItem);            
+            if (deletedItemParent != null) deletedItemParent.FolderCount--;
+            subTree.Remove(deletedItem);            
         }
 
         private void FillTree(IEnumerable<FolderViewModel> list)
         {
-            Application.Current.Dispatcher.Invoke((Action)(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Tree.Clear();
-                UpdateTreeValues(list);
-                foreach (var item in list)
+                var folderViewModels = list as IList<FolderViewModel> ?? list.ToList();
+                UpdateTreeValues(folderViewModels);
+                foreach (var item in folderViewModels)
                 {
                     Tree.Add(item);
                 }
-            }));            
+            });            
         }        
 
         private void UpdateTreeValues(IEnumerable<FolderViewModel> list)
@@ -151,11 +168,11 @@ namespace FatFolderFinder.UI
             {
                 case SizeTypeEnum.Byte:
                     return value;
-                case SizeTypeEnum.KB:
+                case SizeTypeEnum.Kb:
                     return value / 1024;
-                case SizeTypeEnum.MB:
+                case SizeTypeEnum.Mb:
                     return value / (1024 * 1024);
-                case SizeTypeEnum.GB:
+                case SizeTypeEnum.Gb:
                     return value / (1024 * 1024 * 1024);
                 default:
                     throw new NotImplementedException("SelectedSizeType: unknow value");
@@ -168,11 +185,11 @@ namespace FatFolderFinder.UI
             {
                 case SizeTypeEnum.Byte:
                     return (long)Size;
-                case SizeTypeEnum.KB:
+                case SizeTypeEnum.Kb:
                     return (long)(Size * 1024);
-                case SizeTypeEnum.MB:
+                case SizeTypeEnum.Mb:
                     return (long)(Size * (1024 * 1024));
-                case SizeTypeEnum.GB:
+                case SizeTypeEnum.Gb:
                     return (long)(Size * (1024 * 1024 * 1024));
                 default:
                     throw new NotImplementedException("SelectedSizeType: unknow value");
