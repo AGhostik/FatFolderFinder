@@ -98,18 +98,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MainModel.cs" />
-    <Compile Include="SizeTypeEnum.cs" />
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Main\MainModel.cs" />
+    <Compile Include="Main\SizeTypeEnum.cs" />
+    <Compile Include="Main\MainViewModel.cs" />
+    <Compile Include="Main\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FolderViewModel.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Main\FolderViewModel.cs" />
+    <Page Include="Main\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 
-namespace FatFolderFinder
+namespace FatFolderFinder.Main
 {
     public class FolderViewModel : ObservableObject
     {

@@ -1,4 +1,4 @@
-﻿namespace FatFolderFinder
+﻿namespace FatFolderFinder.Main
 {
     public enum SizeTypeEnum
     {

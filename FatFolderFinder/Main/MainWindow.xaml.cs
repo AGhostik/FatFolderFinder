@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace FatFolderFinder
+namespace FatFolderFinder.Main
 {
     public partial class MainWindow
     {
@@ -13,7 +13,7 @@ namespace FatFolderFinder
         }
 
         private readonly MainViewModel _mainViewModel;
-        
+
         private async void FolderDialogButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new CommonOpenFileDialog

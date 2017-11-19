@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 
-namespace FatFolderFinder
+namespace FatFolderFinder.Main
 {
     internal class MainViewModel : ObservableObject
     {

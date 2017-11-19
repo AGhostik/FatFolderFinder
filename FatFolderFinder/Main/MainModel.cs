@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System;
 
-namespace FatFolderFinder
+namespace FatFolderFinder.Main
 {
     public class MainModel
     {
